@@ -60,7 +60,7 @@ class Kmeans:
 
     def fit(self, X):
         if self.type == "Standart": self.centroids = self.initializ_centroids(X)
-        else: self.centroids = self.initializ_centroids_plusplus(X)
+        elif self.type == "++": self.centroids = self.initializ_centroids_plusplus(X)
         for i in range(self.max_iter):
             old_centroids = self.centroids
             distance = self.compute_distance(X, old_centroids)
