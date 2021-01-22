@@ -6,7 +6,7 @@ print(X.shape)
 plt.scatter(X[:, 0], X[:, 1], s=50)
 plt.show()
 
-kmeans = Kmeans(n_cluster=4, max_iter=100)
+kmeans = Kmeans(n_cluster=4, max_iter=100, type="++")
 kmeans.fit(X)
 y_kmeans = kmeans.predict(X)
 

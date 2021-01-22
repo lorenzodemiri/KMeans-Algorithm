@@ -4,18 +4,38 @@ from numpy.linalg import norm
 class Kmeans:
     '''Implementation of the algorith'''
 
-    def __init__(self,n_cluster, max_iter=100, random_state=123):
+    def __init__(self,n_cluster, max_iter=100, random_state=123, type = "Standart"):
         self.n_cluster = n_cluster
         self.max_iter = max_iter
         self.random_state = random_state
         self.centroids = 0
+        self.type = type
 
+    def initializ_centroids_plusplus(self, X):
+        #def plus_plus(ds, k, random_state=42):
+        np.random.seed(self.random_state)
+        centroids = [X[0]]
+
+        for i in range(1, self.n_cluster):
+            dist_sq = np.array([min([np.inner(c-x,c-x) for c in centroids]) for x in X])
+            probs = dist_sq/dist_sq.sum()
+            cumulative_probs = probs.cumsum()
+            r = np.random.rand()
+            
+            for j, p in enumerate(cumulative_probs):
+                if r < p:
+                    i = j
+                    break
+            
+            centroids.append(X[i])
+        return np.array(centroids)
+    
     def initializ_centroids(self, X):
         np.random.RandomState(self.random_state)
         random_idx = np.random.permutation(X.shape[0])
         centroids = X[random_idx[:self.n_cluster]]
         return centroids
-        
+
     def compute_centroids(self, X, labels):
         centroids = np.zeros((self.n_cluster, X.shape[1]))
         for k in range(self.n_cluster):
@@ -39,7 +59,8 @@ class Kmeans:
         return np.sum(np.square(distance))
 
     def fit(self, X):
-        self.centroids = self.initializ_centroids(X)
+        if self.type == "Standart": self.centroids = self.initializ_centroids(X)
+        else: self.centroids = self.initializ_centroids_plusplus(X)
         for i in range(self.max_iter):
             old_centroids = self.centroids
             distance = self.compute_distance(X, old_centroids)
